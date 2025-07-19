@@ -228,6 +228,8 @@ export default function Navbar() {
 }
 
 function MobileNav({ closeSideMenu }: { closeSideMenu: () => void }) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   return (
     <div className="fixed left-0 top-0 flex h-full min-h-screen w-full justify-end bg-black/60 md:hidden">
       <div className="h-full w-[100%] bg-white px-4 py-4">
@@ -244,9 +246,11 @@ function MobileNav({ closeSideMenu }: { closeSideMenu: () => void }) {
               label={item.label}
               iconImage={item.iconImage}
               link={item.link}
-            >
-              {item.children}
-            </SingleNavItem>
+              children={item.children}
+              closeSideMenu={closeSideMenu}
+              isOpen={activeIndex === i}
+              onToggle={() => setActiveIndex(activeIndex === i ? null : i)}
+            />
           ))}
         </div>
       </div>
@@ -254,40 +258,47 @@ function MobileNav({ closeSideMenu }: { closeSideMenu: () => void }) {
   );
 }
 
-function SingleNavItem(item: NavItem) {
+function SingleNavItem({
+  label,
+  link,
+  iconImage,
+  children,
+  closeSideMenu,
+  isOpen,
+  onToggle,
+}: NavItem & {
+  closeSideMenu: () => void;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
   const [animationParent] = useAutoAnimate();
-  const [isItemOpen, setItem] = useState(false);
-
-  function toggleItem() {
-    return setItem(!isItemOpen);
-  }
 
   return (
-    <Link
-      ref={animationParent}
-      onClick={toggleItem}
-      href={item.link ?? "#"}
-      className="relative px-2 py-3 transition-all"
-    >
-      <p className="flex cursor-pointer items-center gap-2 text-neutral-400 group-hover:text-black">
-        <span>{item.label}</span>
-        {item.children && (
-          <IoIosArrowDown
-            className={`text-xs transition-all ${isItemOpen && " rotate-180"}`}
-          />
-        )}
-      </p>
+    <div ref={animationParent}>
+      <div
+        onClick={onToggle}
+        className="relative px-2 py-3 transition-all cursor-pointer"
+      >
+        <p className="flex items-center gap-2 text-neutral-400 group-hover:text-black">
+          <span>{label}</span>
+          {children && (
+            <IoIosArrowDown
+              className={`text-xs transition-all ${isOpen ? "rotate-180" : ""}`}
+            />
+          )}
+        </p>
+      </div>
 
-      {/* dropdown */}
-      {isItemOpen && item.children && (
+      {/* Dropdown */}
+      {isOpen && children && (
         <div className="w-auto flex-col gap-1 rounded-lg bg-white py-3 transition-all flex">
-          {item.children.map((itemChildren, i) => (
+          {children.map((itemChildren, i) => (
             <Link
               key={i}
               href={itemChildren.link ?? "#"}
+              onClick={closeSideMenu}
               className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black"
             >
-              {/* items */}
               <span className="whitespace-nowrap pl-3">
                 {itemChildren.iconImage}
               </span>
@@ -298,6 +309,6 @@ function SingleNavItem(item: NavItem) {
           ))}
         </div>
       )}
-    </Link>
+    </div>
   );
 }
