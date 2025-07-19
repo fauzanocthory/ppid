@@ -182,6 +182,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4 transition-all">
           {navItems.map((item, i) => (
             <Link
+              suppressHydrationWarning
               key={i}
               href={item.link ?? "#"}
               className="relative group px-2 py-3 transition-all"

@@ -29,12 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        suppressHydrationWarning
-        className={`${epilogue.className} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${epilogue.className} antialiased`}>{children}</body>
     </html>
   );
 }
