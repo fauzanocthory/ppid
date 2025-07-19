@@ -268,8 +268,6 @@ type SingleNavItemProps = NavItem & {
 
 function SingleNavItem({
   label,
-  link,
-  iconImage,
   closeSideMenu,
   isOpen,
   onToggle,
@@ -298,12 +296,16 @@ function SingleNavItem({
           {children.map((itemChildren, i) => (
             <Link
               key={i}
-              href={link ?? "#"}
+              href={itemChildren.link ?? "#"}
               onClick={closeSideMenu}
               className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black"
             >
-              <span className="whitespace-nowrap pl-3">{iconImage}</span>
-              <span className="whitespace-nowrap pl-3">{label}</span>
+              <span className="whitespace-nowrap pl-3">
+                {itemChildren.iconImage}
+              </span>
+              <span className="whitespace-nowrap pl-3">
+                {itemChildren.label}
+              </span>
             </Link>
           ))}
         </div>
