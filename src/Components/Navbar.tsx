@@ -20,7 +20,6 @@ import { HiBuildingOffice } from "react-icons/hi2";
 import { PiTreeStructureDuotone } from "react-icons/pi";
 import { FaFileWaveform } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
-import { FcRules } from "react-icons/fc";
 import {
   MdHomeRepairService,
   MdMedicalInformation,
@@ -247,11 +246,12 @@ function MobileNav({ closeSideMenu }: { closeSideMenu: () => void }) {
               label={item.label}
               iconImage={item.iconImage}
               link={item.link}
-              children={item.children}
               closeSideMenu={closeSideMenu}
               isOpen={activeIndex === i}
               onToggle={() => setActiveIndex(activeIndex === i ? null : i)}
-            />
+            >
+              {item.children}
+            </SingleNavItem>
           ))}
         </div>
       </div>
@@ -259,19 +259,22 @@ function MobileNav({ closeSideMenu }: { closeSideMenu: () => void }) {
   );
 }
 
+type SingleNavItemProps = NavItem & {
+  closeSideMenu: () => void;
+  isOpen: boolean;
+  onToggle: () => void;
+  children?: NavItem[]; // Tambahkan ini agar bisa akses children dengan tipe aman
+};
+
 function SingleNavItem({
   label,
   link,
   iconImage,
-  children,
   closeSideMenu,
   isOpen,
   onToggle,
-}: NavItem & {
-  closeSideMenu: () => void;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
+  children,
+}: SingleNavItemProps) {
   const [animationParent] = useAutoAnimate();
 
   return (
@@ -290,22 +293,17 @@ function SingleNavItem({
         </p>
       </div>
 
-      {/* Dropdown */}
       {isOpen && children && (
         <div className="w-auto flex-col gap-1 rounded-lg bg-white py-3 transition-all flex">
           {children.map((itemChildren, i) => (
             <Link
               key={i}
-              href={itemChildren.link ?? "#"}
+              href={link ?? "#"}
               onClick={closeSideMenu}
               className="flex cursor-pointer items-center py-1 pl-6 pr-8 text-neutral-400 hover:text-black"
             >
-              <span className="whitespace-nowrap pl-3">
-                {itemChildren.iconImage}
-              </span>
-              <span className="whitespace-nowrap pl-3">
-                {itemChildren.label}
-              </span>
+              <span className="whitespace-nowrap pl-3">{iconImage}</span>
+              <span className="whitespace-nowrap pl-3">{label}</span>
             </Link>
           ))}
         </div>
